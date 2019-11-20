@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cezar</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%">
+	</svg>
+	<script type="text/javascript">
+	var svg=document.getElementsByTagName('svg')[0];
+	var alpabet=['А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я'];
+	var dictionary=['ПРИМЕР', 'СЛОВАРЬ', 'ЗАЩИТА','ШИФРОВКА'];
+	var alpabet2=new Array();
+	var space=190;
+	var word=document.createElementNS('http://www.w3.org/2000/svg','text');
+	word.setAttributeNS(null, 'x',0);
+	word.setAttributeNS(null,'y',30);
+	word.setAttributeNS(null,'color','#111111');
+	word.textContent='Исходный алфавит:';
+	svg.appendChild(word);
+	for (i=0; i<alpabet.length; i++){
+		var letter=document.createElementNS('http://www.w3.org/2000/svg','text');
+		letter.setAttributeNS(null, 'x',i*20+space);
+		letter.setAttributeNS(null,'y',30);
+		letter.setAttributeNS(null,'color','#111111');
+		letter.textContent=alpabet[i];
+		letter.setAttributeNS(null,'class','default');
+		svg.appendChild(letter);
+	}
+	var word=document.createElementNS('http://www.w3.org/2000/svg','text');
+	word.setAttributeNS(null, 'x',0);
+	word.setAttributeNS(null,'y',60);
+	word.setAttributeNS(null,'color','#111111');
+	word.textContent='Зашифрованный алфавит:';
+	svg.appendChild(word);
+	for (i=0; i<alpabet.length; i++){
+		var letter=document.createElementNS('http://www.w3.org/2000/svg','text');
+		letter.setAttributeNS(null, 'x',i*20+space);
+		letter.setAttributeNS(null,'y',60);
+		letter.setAttributeNS(null,'color','#111111');
+		letter.textContent=alpabet[i];
+		letter.setAttributeNS(null,'class','change');
+		svg.appendChild(letter);
+	}
+	var select=document.createElement('select');
+	select.setAttribute('id','choose');
+	select.setAttribute('name','choose');
+	select.setAttribute('oninput','switchMod(this)');
+	var opt1=document.createElement('option');
+	opt1.setAttribute('value',0);
+	opt1.textContent='Обучение';
+	select.appendChild(opt1);
+	var opt1=document.createElement('option');
+	opt1.setAttribute('value',1);
+	opt1.textContent='Задание';
+	select.appendChild(opt1);
+	svg.parentNode.appendChild(select);
+
+	var br=document.createElement('br');
+	svg.parentNode.appendChild(br);
+
+	showMod0();
+
+	function showMod0(){
+		var label=document.createElement('label');
+		label.setAttribute('for','slider');
+		label.setAttribute('id','Lslider');
+		label.textContent='Смещение: ';
+		svg.parentNode.appendChild(label);
+
+		var slider=document.createElement('input');
+		slider.setAttribute('type','range');
+		slider.setAttribute('id','slider');
+		slider.setAttribute('oninput','changeAlp(this)');
+		slider.setAttribute('min',0);
+		slider.setAttribute('max',32);
+		slider.setAttribute('value',0);
+		svg.parentNode.appendChild(slider);
+
+		var label=document.createElement('label');
+		label.setAttribute('for','slider');
+		label.setAttribute('id','valueRange');
+		label.textContent='0';
+		svg.parentNode.appendChild(label);
+
+		var br=document.createElement('br');
+		br.setAttribute('class','tmp');
+		svg.parentNode.appendChild(br);
+
+		var label1=document.createElement('label');
+		label1.setAttribute('for','startText');
+		label1.setAttribute('id','LStartText');
+		label1.textContent='Исходный текст: ';
+		svg.parentNode.appendChild(label1);
+
+		var text=document.createElement('input');
+		text.setAttribute('type', 'text');
+		text.setAttribute('width','100%');
+		text.setAttribute('class','firstpadding');
+		text.setAttribute('placeholder','Введите исходный текст');
+		text.setAttribute('oninput','changeAlp(this)');
+		text.setAttribute('id','startText');
+		svg.parentNode.appendChild(text);
+
+		var br=document.createElement('br');
+		br.setAttribute('class','tmp');
+		svg.parentNode.appendChild(br);
+
+		var label2=document.createElement('label');
+		label2.setAttribute('for','endText');
+		label2.setAttribute('id','LEndText');
+		label2.textContent='Получившийся текст: ';
+		svg.parentNode.appendChild(label2);
+
+		var text=document.createElement('input');
+		text.setAttribute('type', 'text');
+		text.setAttribute('width','100%');
+		text.setAttribute('placeholder','Получившийся текст');
+		text.setAttribute('id','endText');
+		svg.parentNode.appendChild(text);
+	}
+
+	function delMod0(){
+		document.getElementById('Lslider').remove();
+		document.getElementById('slider').remove();
+		document.getElementById('valueRange').remove();
+		document.getElementById('LStartText').remove();
+		document.getElementById('LEndText').remove();
+		document.getElementById('startText').remove();
+		document.getElementById('endText').remove();
+		document.getElementsByClassName('tmp')[0].remove();
+	}
+
+	function showMod1(){
+		var but=document.createElement('button');
+		but.setAttribute('id','beginTrain');
+		but.setAttribute('onclick','startTrain()');
+		but.textContent='Начать тренировку';
+		svg.parentNode.appendChild(but);
+	}
+
+	var shift;
+	var enqWord;
+	var time;
+	function startTrain(){
+		document.getElementById('beginTrain').remove();
+		shift=Math.ceil(Math.random()*5);
+		enqWord=dictionary[Math.floor(Math.random()*dictionary.length)];
+		var p=document.createElement('p');
+		p.setAttribute('id','task');
+		p.textContent='Зашифруйте слово: \"'+enqWord+'\" Используя смещение: '+shift;
+		svg.parentNode.appendChild(p);
+		var edit=document.createElement('input');
+		edit.setAttribute('type','text');
+		edit.setAttribute('id','answer');
+		edit.setAttribute('placeholder','Введите ответ');
+		svg.parentNode.appendChild(edit);
+		br.setAttribute('class','tmp');
+		svg.parentNode.appendChild(br);
+		var but=document.createElement('button');
+		but.setAttribute('id','endTrain');
+		but.setAttribute('onclick','endTrain()');
+		but.textContent='Завершить тренировку';
+		svg.parentNode.appendChild(but);
+		time=performance.now();
+
+	}
+
+	function endTrain(){
+		time=performance.now()-time;
+		var userText=document.getElementById('answer').value.toUpperCase();
+		alpabet2.length=0;
+		for (i=0; i<alpabet.length; i++){
+			var letter=document.createElementNS('http://www.w3.org/2000/svg','text');
+			var c=(i+Number(shift))%alpabet.length;
+			letter.textContent=alpabet[(i+Number(shift))%alpabet.length];
+			if (c<0)
+				letter.textContent=alpabet[(i+Number(shift))%alpabet.length+alpabet.length];
+			alpabet2.push(letter.textContent);
+		}
+		var text='';
+		for (i=0; i<enqWord.length;i++){
+			if (enqWord[i]==' ') {text+=' '; continue;}
+			text+=alpabet2[alpabet.indexOf(enqWord[i])];
+		}
+		text=text.toUpperCase();
+		var p=document.getElementById('task');
+		p.textContent="Успешно завершено. Заняло времени: "+(time/1000).toFixed(1)+" сек. Ошибок допущено: "+strEQ(userText,text);
+	}
+
+	function delMod1(){
+		var tmp=document.getElementById('beginTrain');
+		if (tmp==null){
+			document.getElementById('task').remove();
+			document.getElementById('answer').remove();
+			document.getElementById('endTrain').remove();
+		}
+		else
+			tmp.remove();
+		document.getElementsByClassName('tmp')[0].remove();
+	}
+
+	function strEQ(strUser,strRight){
+		var mistake=0;
+		if (strUser.length>strRight.length){
+			mistake=+strUser.slice(strRight.length).length;
+			strUser=strUser.slice(0,strRight.length);
+			for (var i = 0; i < strUser.length; i++) {
+				if (strUser[i]!=strRight[i]) mistake++;
+			}
+			return mistake;
+		}
+		if (strUser.length<strRight.length){
+			while(strUser.length<strRight.length){
+				strUser+=" ";
+			}
+			for (var i = 0; i < strUser.length; i++) {
+				if (strUser[i]!=strRight[i]) mistake++;
+			}
+			return mistake;
+		}
+		if (strUser.length==strRight.length){
+			for (var i = 0; i < strUser.length; i++) {
+				if (strUser[i]!=strRight[i]) mistake++;
+			}
+			return mistake;
+		}
+		return mistake;
+	}
+
+	function changeAlp(elem) {
+		elem=document.getElementById('slider');
+		var label=document.getElementById('valueRange')
+		label.textContent=elem.value;
+		alpabet2.length=0;
+		delChange();
+		for (i=0; i<alpabet.length; i++){
+			var letter=document.createElementNS('http://www.w3.org/2000/svg','text');
+			letter.setAttributeNS(null, 'x',i*20+space);
+			letter.setAttributeNS(null,'y',60);
+			letter.setAttributeNS(null,'color','#111111');
+			var c=(i+Number(elem.value))%alpabet.length;
+			letter.textContent=alpabet[(i+Number(elem.value))%alpabet.length];
+			if (c<0)
+				letter.textContent=alpabet[(i+Number(elem.value))%alpabet.length+alpabet.length];
+			alpabet2.push(letter.textContent);
+			letter.setAttributeNS(null,'class','change');
+			svg.appendChild(letter);
+		}
+		var startText=document.getElementById('startText');
+		var a=startText.value.toUpperCase();
+		var text='';
+		for (i=0; i<a.length;i++){
+			if (a[i]==' ') {text+=' '; continue;}
+			text+=alpabet2[alpabet.indexOf(a[i])];
+		}
+		var endText=document.getElementById('endText');
+		endText.value=text;
+	}
+
+	function delChange(){
+		var a=document.getElementsByClassName('change');
+		for(i=a.length-1; i>=0; i--)
+			a[i].remove();
+	}
+
+	function switchMod(elem){
+		var selectedOption=elem.options[elem.selectedIndex].value;
+		if (selectedOption==0){
+			delMod1();
+			showMod0();
+		}
+		else{
+			delMod0();
+			showMod1();
+		}
+	}
+
+</script>
+</body>
+</html>

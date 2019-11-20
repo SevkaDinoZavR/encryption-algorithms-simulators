@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>AES</title>
+</head>
+<body onm>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%">
+<rect x="10" y="80" width="160" height="80" id='goal1' class='goal' style="stroke:#006600; fill: #00cccc; z-index: 1; position: relative;" />
+<rect x="200" y="80" width="160" height="80" id='goal2' class='goal' style="stroke:#006600; fill: #00cccc; z-index: 1; position: relative;" />
+<rect x="10" y="10" width="120" height="50" id='bloc1' class='block' style="stroke:#006600; fill: #00cc00; z-index: 2; position: relative;" onmousedown='startDrag(event)' onmousemove='drag(event)' onmouseup='endDrag(event) '/>
+<rect x="200" y="10" width="120" height="50" id='bloc2' class='block' style="stroke:#006600; fill: #00cc00; z-index: 2; position: relative;" onmousedown='startDrag(event)' onmousemove='drag(event)' onmouseup='endDrag(event) '/>
+<!-- <defs>
+    <marker id="markerArrow" markerWidth="13" markerHeight="13" refX="2" refY="6"
+           orient="auto">
+        <path d="M2,2 L2,11 L10,6 L2,2" style="fill: #000000;" />
+    </marker>
+</defs>
+<path d="M100,80 L150,60" style="stroke: #000000; stroke-width: 2px; fill: none;marker-end: url(#markerArrow);"/> -->
+</svg>
+<script id=myScript>
+var DragTarget=null;
+var Dragging = false;
+var X=0;
+var Y=0;
+var arrBlocks=document.getElementsByClassName('block');
+var arrGoals=document.getElementsByClassName('goal');
+function startDrag(evt)
+{
+    if(!Dragging) 
+    {
+        DragTarget = evt.target;
+        X=Number(evt.clientX)-Number(DragTarget.getAttribute('x'));
+        Y=Number(evt.clientY)-Number(DragTarget.getAttribute('y'));
+        DragTarget.setAttribute('x',Number(evt.clientX)-X);
+        DragTarget.setAttribute('y',Number(evt.clientY)-Y);
+
+        Dragging=true;
+    }
+}
+
+function drag(evt)
+{
+    if(Dragging)
+    {
+        DragTarget.setAttribute('x',Number(evt.clientX)-X);
+        DragTarget.setAttribute('y',Number(evt.clientY)-Y);
+    }
+}
+
+function endDrag(evt)
+{
+    Dragging = false;
+    DragTarget.setAttribute('x',Number(evt.clientX)-X);
+    DragTarget.setAttribute('y',Number(evt.clientY)-Y);
+    check(evt);
+}
+
+function check(evt){
+	var arrFlags=new Array();
+	for (var i = 0; i < arrBlocks.length; i++) {
+		var bX=Number(arrBlocks[i].getAttribute('x'));
+		var bY=Number(arrBlocks[i].getAttribute('y'));
+		for (var j = 0; j < arrGoals.length; j++) {
+			var gX1=Number(arrGoals[i].getAttribute('x'));
+			var gY1=Number(arrGoals[i].getAttribute('y'));
+			var gX2=gX1+Number(arrGoals[i].getAttribute('width'));
+			var gY2=gY1+Number(arrGoals[i].getAttribute('height'));
+			if (((bX>=gX1)&&(bY>=gY1))&&((bX<=gX2)&&(bY<=gX2))){
+				if (arrGoals[j].id.slice(4)==arrBlocks[i].id.slice(4)){
+					arrFlags.push(j);
+                }
+            }
+		}
+	}
+    for (var i = 0; i < arrGoals.length; i++) {
+        arrGoals[i].setAttribute('style','fill: #00cccc');
+    }
+    for (var i = 0; i < arrFlags.length; i++) {
+        arrGoals[arrFlags[i]].setAttribute('style','fill: #000000');
+    }
+}
+</script>
+</body>
+</html>
